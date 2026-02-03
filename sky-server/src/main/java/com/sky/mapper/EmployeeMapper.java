@@ -21,4 +21,10 @@ public interface EmployeeMapper extends BaseMapper<Employee> {
 
 
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+    /*
+    * 根据主键动态修改属性
+    * */
+    void update(Employee employee);
+    @Select("select * from employee where id=#{id}")
+    Employee getById(Long id);
 }

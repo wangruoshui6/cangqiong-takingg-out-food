@@ -1,5 +1,6 @@
 package com.sky.entity;
 
+import ch.qos.logback.classic.db.names.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
