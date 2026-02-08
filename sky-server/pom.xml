@@ -49,11 +49,11 @@
         
 
         <!-- MyBatis-Plus 集成 -->
-        <dependency>
+        <!-- <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.1</version>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
