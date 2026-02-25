@@ -8,6 +8,14 @@ sky:
     password: root
   alioss:
     endpoint: oss-cn-beijing.aliyuncs.com
-#    access-key-id:
-#    access-key-secret:
+    access-key-id: LTAI5tMmhpvBLwcefcmuCr4V
+    access-key-secret: g6ZEXSZdgpCh2mKTOYWix2d4LXvyjO
     bucket-name: sky-itcastw1
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 1  # 使用数据库1，黑马点评用的是数据库0
+  wechat:
+    appid: wxc9467d2007064343
+    secret: 9475b9b36049b298e4456d54899a7a00

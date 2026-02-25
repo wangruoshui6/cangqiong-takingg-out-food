@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 
+import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -76,4 +77,36 @@ public class DishController {
         dishService.updateWithFlavor(dishDTO);
         return Result.success();
     }
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<List<DishVO>> list(Long categoryId) {
+        Dish dish = new Dish();
+        dish.setCategoryId(categoryId);
+        dish.setStatus(StatusConstant.ENABLE);//查询起售中的菜品
+
+        List<DishVO> list = dishService.listWithFlavor(dish);
+
+        return Result.success(list);
+    }
+
+    /**
+     * 菜品起售停售
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("菜品起售停售")
+    public Result startOrStop(@PathVariable("status") Integer status, @RequestParam("id") Long id) {
+        log.info("菜品起售停售：status={}, id={}", status, id);
+        dishService.startOrStop(status, id);
+        return Result.success();
+    }
+
 }
