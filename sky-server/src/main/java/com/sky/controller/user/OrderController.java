@@ -95,6 +95,14 @@ public class OrderController {
         orderService.repetition(id);
         return Result.success();
     }
+    @GetMapping("/reminder/{id}")
+    @ApiOperation("客户催单")
+    public Result reminder(@PathVariable Long id){
+        orderService.reminder(id);
+        return Result.success();
+    }
+
+
 
     /**
      * 模拟支付成功（不调用真实微信支付API）
