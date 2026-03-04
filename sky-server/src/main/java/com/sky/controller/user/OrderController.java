@@ -1,5 +1,6 @@
 package com.sky.controller.user;
 
+import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
@@ -84,6 +85,25 @@ public class OrderController {
     @ApiOperation("再来一单")
     public Result<?> repetition(@PathVariable Long id) {
         orderService.repetition(id);
+        return Result.success();
+    }
+
+    /**
+     * 模拟支付成功（不调用真实微信支付API）
+     * 更新订单状态为已支付、待接单，返回成功让前端直接跳转支付成功页面
+     *
+     * @param ordersPaymentDTO
+     * @return
+     */
+    @PutMapping("/payment")
+    @ApiOperation("模拟支付成功")
+    public Result<?> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) {
+        log.info("模拟支付成功，订单号：{}", ordersPaymentDTO.getOrderNumber());
+        
+        // 更新订单状态为已支付、待接单（这样历史订单才能看到）
+        orderService.payment(ordersPaymentDTO);
+        
+        // 返回简单成功，不返回支付参数，让前端直接跳转支付成功页面
         return Result.success();
     }
 }

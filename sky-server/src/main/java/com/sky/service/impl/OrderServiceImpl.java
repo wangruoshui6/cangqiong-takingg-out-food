@@ -7,6 +7,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.OrdersCancelDTO;
 import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersRejectionDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.entity.AddressBook;
@@ -519,5 +520,43 @@ public class OrderServiceImpl implements OrderService {
 
         // 将该订单对应的所有菜品信息拼接在一起
         return String.join("", orderDishList);
+    }
+
+    /**
+     * 模拟支付成功（不调用真实微信支付API）
+     * 仅用于测试，更新订单状态为已支付、待接单
+     */
+    @Override
+    @Transactional
+    public void payment(OrdersPaymentDTO ordersPaymentDTO) {
+        // 根据订单号查询订单
+        Orders ordersDB = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber());
+
+        // 校验订单是否存在
+        if (ordersDB == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        // 校验订单状态：只有待付款状态才能支付
+        if (!ordersDB.getStatus().equals(Orders.PENDING_PAYMENT)) {
+            throw new OrderBusinessException("订单状态不正确，无法支付");
+        }
+
+        // 校验支付状态：只有未支付状态才能支付
+        if (!ordersDB.getPayStatus().equals(Orders.UN_PAID)) {
+            throw new OrderBusinessException("订单已支付，请勿重复支付");
+        }
+
+        // 模拟支付成功：更新订单状态和支付状态
+        Orders orders = new Orders();
+        orders.setId(ordersDB.getId());
+        // 支付成功后，订单状态变为待接单
+        orders.setStatus(Orders.TO_BE_CONFIRMED);
+        // 支付状态改为已支付
+        orders.setPayStatus(Orders.PAID);
+        // 设置结账时间
+        orders.setCheckoutTime(LocalDateTime.now());
+
+        orderMapper.update(orders);
     }
 }

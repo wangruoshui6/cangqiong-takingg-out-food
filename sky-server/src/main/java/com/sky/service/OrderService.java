@@ -3,6 +3,7 @@ package com.sky.service;
 import com.sky.dto.OrdersCancelDTO;
 import com.sky.dto.OrdersConfirmDTO;
 import com.sky.dto.OrdersPageQueryDTO;
+import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersRejectionDTO;
 import com.sky.dto.OrdersSubmitDTO;
 import com.sky.result.PageResult;
@@ -88,4 +89,10 @@ public interface OrderService {
      * @param id
      */
     void complete(Long id);
+
+    /**
+     * 模拟支付成功（不调用真实微信支付API）
+     * @param ordersPaymentDTO
+     */
+    void payment(OrdersPaymentDTO ordersPaymentDTO);
 }
