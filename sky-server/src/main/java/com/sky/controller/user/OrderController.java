@@ -2,9 +2,11 @@ package com.sky.controller.user;
 
 import com.sky.dto.OrdersPaymentDTO;
 import com.sky.dto.OrdersSubmitDTO;
+import com.alibaba.fastjson.JSON;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
+import com.sky.websocket.WebSocketServer;
 import com.sky.vo.OrderVO;
 import com.sky.vo.OrderSubmitVO;
 import io.swagger.annotations.Api;
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController("userOrderController")
 @RequestMapping("/user/order")
 @Api(tags = "用户订单相关接口")
@@ -26,6 +31,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     @PostMapping("/submit")
     @ApiOperation("用户下单")
@@ -102,6 +110,15 @@ public class OrderController {
         
         // 更新订单状态为已支付、待接单（这样历史订单才能看到）
         orderService.payment(ordersPaymentDTO);
+
+        // 通过WebSocket向前端推送来单提醒
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", 1); // 1表示新订单提醒
+        map.put("orderNumber", ordersPaymentDTO.getOrderNumber());
+        map.put("content", "有新订单，订单号：" + ordersPaymentDTO.getOrderNumber());
+
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
         
         // 返回简单成功，不返回支付参数，让前端直接跳转支付成功页面
         return Result.success();
